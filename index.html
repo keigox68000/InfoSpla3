@@ -231,7 +231,8 @@
 
             } catch (error) {
                 console.error('データの取得に失敗しました:', error);
-                errorContainer.textContent = 'データの取得に失敗しました。しばらくしてからもう一度お試しください。';
+                // ★ 変更点: 具体的なエラーメッセージを表示するように修正
+                errorContainer.textContent = `エラーが発生しました: ${error.toString()}`;
                 errorContainer.style.display = 'block';
             } finally {
                 loadingIndicator.style.display = 'none';
