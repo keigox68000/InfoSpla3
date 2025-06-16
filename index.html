@@ -21,6 +21,12 @@
         /* Interフォントを読み込み（フォント読み込み失敗時の代替用） */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
+        /* ★ 変更点: ブラウザによる文字サイズの自動調整を抑制 */
+        html {
+            -webkit-text-size-adjust: 100%; /* iOS Safari用 */
+            text-size-adjust: 100%; /* 標準 */
+        }
+
         body {
             /* デフォルトフォントもBuildingFontに */
             font-family: 'BuildingFont', 'Inter', sans-serif;
@@ -70,16 +76,16 @@
             box-shadow: 0 0 10px rgba(66, 153, 225, 0.7);
         }
 
-        /* ★ 変更点: ボタンの文字サイズを数値で直接指定 */
+        /* ボタンの文字サイズを数値で直接指定 */
         nav button {
             /* スマートフォンなどの小さい画面でのサイズ */
-            font-size: 14px; /* ← ここの数値を調整してみてください */
+            font-size: 14px; /* ユーザー様設定値を保持 */
         }
 
         /* 画面幅が640px以上の場合の文字サイズ */
         @media (min-width: 640px) {
             nav button {
-                font-size: 24px; /* ← ここの数値を調整してみてください */
+                font-size: 24px; /* ユーザー様設定値を保持 */
             }
         }
     </style>
@@ -91,7 +97,7 @@
             <h1 class="text-2xl sm:text-3xl text-white leading-tight">スプラトゥーン3<br>ステージインフォ</h1>
         </header>
 
-        <!-- ★ 変更点: 全てのボタンから text-sm, sm:text-base クラスを削除 -->
+        <!-- text-sm, sm:text-base クラスは削除済み -->
         <nav class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6 max-w-md mx-auto">
             <button id="btn-all" class="btn active-btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-blue-500 text-white" data-endpoint="schedule">すべて</button>
             <button id="btn-regular" class="btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-gray-700 text-gray-300" data-endpoint="regular/schedule">レギュラー</button>
