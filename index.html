@@ -87,7 +87,9 @@
     </div>
 
     <script>
+        // ★ 変更点: プロキシが不要なため、APIのベースURLのみ定義
         const API_BASE_URL = "https://spla3.yuu26.com/api/";
+        
         const dataContainer = document.getElementById('data-container');
         const loadingIndicator = document.getElementById('loading');
         const errorContainer = document.getElementById('error');
@@ -129,17 +131,19 @@
                         </div>`;
                 }
                 
-                const stagesHtml = schedule.stages.map(stage => `
+                const stagesHtml = schedule.stages ? schedule.stages.map(stage => `
                     <div class="w-full md:w-1/2 p-2">
                         <img src="${stage.image}" alt="${stage.name}" class="stage-image" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1a202c/e2e8f0?text=画像なし';">
                         <p class="text-center mt-2 font-semibold text-base">${stage.name}</p>
                     </div>
-                `).join('');
+                `).join('') : '';
+
+                const ruleName = schedule.rule ? schedule.rule.name : 'イベント';
 
                 return `
                     <div class="card">
                         <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
-                            <h3 class="text-lg sm:text-xl font-bold text-blue-400">${schedule.rule.name}</h3>
+                            <h3 class="text-lg sm:text-xl font-bold text-blue-400">${ruleName}</h3>
                             <span class="text-sm sm:text-base text-gray-400 font-medium">${formatDateTime(schedule.start_time)} - ${formatDateTime(schedule.end_time)}</span>
                         </div>
                         <div class="flex flex-wrap -m-2">${stagesHtml}</div>
@@ -199,17 +203,15 @@
             dataContainer.innerHTML = '';
 
             try {
-                const response = await fetch(API_BASE_URL + endpoint, {
-                    headers: {
-                        'User-Agent': 'Spla3ScheduleViewer/1.0 (Prototype for User)',
-                    },
-                });
+                // ★ 変更点: プロキシを使わずAPIに直接アクセス
+                const response = await fetch(API_BASE_URL + endpoint);
 
                 if (!response.ok) {
                     throw new Error(`HTTPエラー: ${response.status}`);
                 }
                 
                 const data = await response.json();
+
                 let html = '';
 
                 if (endpoint === 'schedule') {
@@ -231,7 +233,6 @@
 
             } catch (error) {
                 console.error('データの取得に失敗しました:', error);
-                // ★ 変更点: 具体的なエラーメッセージを表示するように修正
                 errorContainer.textContent = `エラーが発生しました: ${error.toString()}`;
                 errorContainer.style.display = 'block';
             } finally {
