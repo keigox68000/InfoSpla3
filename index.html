@@ -39,6 +39,7 @@
         }
         .btn {
             transition: all 0.2s ease-in-out;
+            text-align: center; /* ボタンのテキストを中央揃え */
         }
         .btn:hover {
             transform: translateY(-2px);
@@ -60,13 +61,14 @@
         </header>
 
         <!-- モード選択ボタン -->
-        <nav class="flex flex-wrap justify-center gap-2 mb-6">
+        <!-- ★ 変更点: flexboxからgridレイアウトに変更し、ボタンの並びを整理 -->
+        <nav class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6 max-w-2xl mx-auto">
             <button id="btn-all" class="btn active-btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-blue-500 text-white" data-endpoint="schedule">全ルール</button>
             <button id="btn-regular" class="btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="regular/schedule">レギュラー</button>
-            <button id="btn-bankara-challenge" class="btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-challenge/schedule">バンカラ (チャレンジ)</button>
-            <button id="btn-bankara-open" class="btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-open/schedule">バンカラ (オープン)</button>
+            <button id="btn-bankara-challenge" class="btn col-span-1 sm:col-span-2 font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-challenge/schedule">バンカラ (チャレンジ)</button>
+            <button id="btn-bankara-open" class="btn col-span-1 sm:col-span-2 font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-open/schedule">バンカラ (オープン)</button>
             <button id="btn-x" class="btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="x/schedule">Xマッチ</button>
-            <button id="btn-salmon" class="btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="coop-grouping/schedule">サーモンラン</button>
+            <button id="btn-salmon" class="btn col-span-3 sm:col-span-6 font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="coop-grouping/schedule">サーモンラン</button>
         </nav>
 
         <!-- ローディングスピナー -->
@@ -87,7 +89,6 @@
     </div>
 
     <script>
-        // ★ 変更点: プロキシが不要なため、APIのベースURLのみ定義
         const API_BASE_URL = "https://spla3.yuu26.com/api/";
         
         const dataContainer = document.getElementById('data-container');
@@ -182,7 +183,8 @@
                             </div>
                             <div>
                                 <p class="font-semibold mb-2 text-base sm:text-lg">支給ブキ</p>
-                                <div class="flex justify-around flex-wrap gap-2">${weaponsHtml}</div>
+                                <!-- ★ 変更点: flexboxからgridレイアウトに変更し、ブキアイコンを4列で表示 -->
+                                <div class="grid grid-cols-4 gap-2">${weaponsHtml}</div>
                                 ${run.boss ? `<div class="mt-4 text-center"><p class="font-semibold text-base sm:text-lg text-red-400">オカシラシャケ: ${run.boss.name}</p></div>` : ''}
                             </div>
                         </div>
@@ -203,7 +205,6 @@
             dataContainer.innerHTML = '';
 
             try {
-                // ★ 変更点: プロキシを使わずAPIに直接アクセス
                 const response = await fetch(API_BASE_URL + endpoint);
 
                 if (!response.ok) {
