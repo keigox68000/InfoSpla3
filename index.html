@@ -69,24 +69,36 @@
             color: white;
             box-shadow: 0 0 10px rgba(66, 153, 225, 0.7);
         }
+
+        /* ★ 変更点: ボタンの文字サイズを数値で直接指定 */
+        nav button {
+            /* スマートフォンなどの小さい画面でのサイズ */
+            font-size: 14px; /* ← ここの数値を調整してみてください */
+        }
+
+        /* 画面幅が640px以上の場合の文字サイズ */
+        @media (min-width: 640px) {
+            nav button {
+                font-size: 24px; /* ← ここの数値を調整してみてください */
+            }
+        }
     </style>
 </head>
 <body class="p-2 sm:p-6">
 
     <div class="max-w-7xl mx-auto">
         <header class="text-center mb-6">
-            <!-- ★ 変更点: font-bold を削除 -->
             <h1 class="text-2xl sm:text-3xl text-white leading-tight">スプラトゥーン3<br>ステージインフォ</h1>
         </header>
 
-        <!-- ★ 変更点: 全てのボタンから font-bold を削除 -->
+        <!-- ★ 変更点: 全てのボタンから text-sm, sm:text-base クラスを削除 -->
         <nav class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6 max-w-md mx-auto">
-            <button id="btn-all" class="btn active-btn flex justify-center items-center h-16 py-1.5 px-3 text-base sm:text-lg rounded-full bg-blue-500 text-white" data-endpoint="schedule">すべて</button>
-            <button id="btn-regular" class="btn flex justify-center items-center h-16 py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="regular/schedule">レギュラー</button>
-            <button id="btn-bankara-challenge" class="btn flex flex-col justify-center items-center h-16 leading-tight py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-challenge/schedule">バンカラ<span class="text-xs font-normal" style="font-family: 'BuildingFont', 'Inter', sans-serif;">(チャレンジ)</span></button>
-            <button id="btn-bankara-open" class="btn flex flex-col justify-center items-center h-16 leading-tight py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-open/schedule">バンカラ<span class="text-xs font-normal" style="font-family: 'BuildingFont', 'Inter', sans-serif;">(オープン)</span></button>
-            <button id="btn-x" class="btn flex justify-center items-center h-16 py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="x/schedule">Xマッチ</button>
-            <button id="btn-salmon" class="btn flex justify-center items-center h-16 py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="coop-grouping/schedule">サーモンラン</button>
+            <button id="btn-all" class="btn active-btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-blue-500 text-white" data-endpoint="schedule">すべて</button>
+            <button id="btn-regular" class="btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-gray-700 text-gray-300" data-endpoint="regular/schedule">レギュラー</button>
+            <button id="btn-bankara-challenge" class="btn flex flex-col justify-center items-center h-16 leading-tight py-1.5 px-3 rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-challenge/schedule">バンカラ<span class="text-sm font-normal" style="font-family: 'BuildingFont', 'Inter', sans-serif;">(チャレンジ)</span></button>
+            <button id="btn-bankara-open" class="btn flex flex-col justify-center items-center h-16 leading-tight py-1.5 px-3 rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-open/schedule">バンカラ<span class="text-sm font-normal" style="font-family: 'BuildingFont', 'Inter', sans-serif;">(オープン)</span></button>
+            <button id="btn-x" class="btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-gray-700 text-gray-300" data-endpoint="x/schedule">Xマッチ</button>
+            <button id="btn-salmon" class="btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-gray-700 text-gray-300" data-endpoint="coop-grouping/schedule">サーモンラン</button>
         </nav>
 
         <div id="loading" class="text-center py-10" style="display: none;">
@@ -133,7 +145,6 @@
          */
         function createScheduleHtml(title, schedules) {
             if (!schedules || schedules.length === 0) {
-                 // ★ 変更点: font-bold を削除
                  return `<h2 class="section-title text-xl sm:text-2xl mb-4 text-center text-gray-400">${title}</h2><p class="text-center text-gray-500">現在、開催情報はありません。</p>`;
             }
 
@@ -142,7 +153,6 @@
                     return `
                         <div class="card">
                             <div class="text-center">
-                                <!-- ★ 変更点: font-semibold を削除 -->
                                 <p class="text-base sm:text-lg text-yellow-400">フェス開催中！</p>
                                 <p class="text-sm text-gray-400">${formatDateTime(schedule.start_time)} - ${formatDateTime(schedule.end_time)}</p>
                             </div>
@@ -152,7 +162,6 @@
                 const stagesHtml = schedule.stages ? schedule.stages.map(stage => `
                     <div class="w-full md:w-1/2 p-2">
                         <img src="${stage.image}" alt="${stage.name}" class="stage-image" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1a202c/e2e8f0?text=画像なし';">
-                        <!-- ★ 変更点: font-semibold を削除 -->
                         <p class="text-center mt-2 text-lg">${stage.name}</p>
                     </div>
                 `).join('') : '';
@@ -162,9 +171,7 @@
                 return `
                     <div class="card">
                         <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
-                            <!-- ★ 変更点: font-bold を削除 -->
                             <h3 class="text-xl sm:text-2xl text-blue-400">${ruleName}</h3>
-                            <!-- ★ 変更点: font-medium を削除 -->
                             <span class="text-base sm:text-lg text-gray-400">${formatDateTime(schedule.start_time)} - ${formatDateTime(schedule.end_time)}</span>
                         </div>
                         <div class="flex flex-wrap -m-2">${stagesHtml}</div>
@@ -172,7 +179,6 @@
                 `;
             }).join('');
             
-            // ★ 変更点: font-bold を削除
             return `<h2 class="section-title text-2xl sm:text-3xl mb-4 border-l-4 border-blue-400 pl-3">${title}</h2>${schedulesHtml}`;
         }
 
@@ -194,22 +200,17 @@
                 return `
                     <div class="card">
                         <div class="text-right mb-4">
-                             <!-- ★ 変更点: font-medium を削除 -->
                              <span class="text-base sm:text-lg text-gray-400">${formatDateTime(run.start_time)} - ${formatDateTime(run.end_time)}</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                             <div>
                                 <img src="${run.stage.image}" alt="${run.stage.name}" class="stage-image" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1a202c/e2e8f0?text=ステージ';">
-                                <!-- ★ 変更点: font-semibold を削除 -->
                                 <p class="text-center mt-2 text-lg">${run.stage.name}</p>
-                                <!-- ★ 変更点: font-bold を削除 -->
                                 ${run.is_big_run ? '<p class="text-center text-red-500 mt-1 text-sm">ビッグラン発生中！</p>' : ''}
                             </div>
                             <div>
-                                <!-- ★ 変更点: font-semibold を削除 -->
                                 <p class="mb-2 text-lg sm:text-xl">支給ブキ</p>
                                 <div class="grid grid-cols-4 gap-2">${weaponsHtml}</div>
-                                <!-- ★ 変更点: font-semibold を削除 -->
                                 ${run.boss ? `<div class="mt-4 text-center"><p class="text-lg sm:text-xl text-red-400">オカシラシャケ: ${run.boss.name}</p></div>` : ''}
                             </div>
                         </div>
@@ -217,7 +218,6 @@
                 `;
             }).join('');
 
-            // ★ 変更点: font-bold を削除
             return `<h2 class="section-title text-2xl sm:text-3xl mb-4 border-l-4 border-green-400 pl-3">サーモンラン</h2>${salmonRunHtml}`;
         }
         
