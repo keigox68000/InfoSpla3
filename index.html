@@ -42,12 +42,11 @@
         .card {
             background-color: #2d3748;
             border-radius: 0.75rem;
-            padding: 1rem;
+            padding: 0.75rem 1rem; /* 上下0.75rem, 左右1rem */
             margin-bottom: 1rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
             border: 1px solid #4a5568;
         }
-        /* ★ 変更点: max-heightを削除し、HTML側でサイズを制御 */
         .stage-image {
             width: 100%;
             height: auto; /* アスペクト比を維持 */
@@ -144,7 +143,7 @@
             let schedulesHtml = schedules.map(schedule => {
                 if (schedule.is_fest && !schedule.rule) {
                     return `
-                        <div class="card">
+                        <div class="card max-w-4xl mx-auto">
                             <div class="text-center">
                                 <p class="text-base sm:text-lg text-yellow-400">フェス開催中！</p>
                                 <p class="text-sm text-gray-400">${formatDateTime(schedule.start_time)} - ${formatDateTime(schedule.end_time)}</p>
@@ -152,7 +151,6 @@
                         </div>`;
                 }
                 
-                // ★ 変更点: 画像をコンテナで囲みサイズ制御、フォントサイズを大きく
                 const stagesHtml = schedule.stages ? schedule.stages.map(stage => `
                     <div class="w-full md:w-1/2 p-2">
                         <div class="max-w-xs mx-auto">
@@ -165,12 +163,12 @@
                 const ruleName = schedule.rule ? schedule.rule.name : 'イベント';
 
                 return `
-                    <div class="card">
+                    <div class="card max-w-4xl mx-auto">
                         <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
                             <h3 class="text-xl sm:text-2xl text-blue-400">${ruleName}</h3>
                             <span class="text-base sm:text-lg text-gray-400">${formatDateTime(schedule.start_time)} - ${formatDateTime(schedule.end_time)}</span>
                         </div>
-                        <div class="flex flex-wrap -m-2">${stagesHtml}</div>
+                        <div class="flex flex-wrap md:flex-nowrap justify-center -m-2">${stagesHtml}</div>
                     </div>
                 `;
             }).join('');
@@ -194,14 +192,15 @@
                     </div>`).join('');
 
                 return `
-                    <div class="card">
+                    <!-- ★ 変更点: カードにmax-widthとmx-autoを適用 -->
+                    <div class="card max-w-4xl mx-auto">
                         <div class="text-right mb-4">
                              <span class="text-base sm:text-lg text-gray-400">${formatDateTime(run.start_time)} - ${formatDateTime(run.end_time)}</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                             <div>
-                                <!-- ★ 変更点: 画像をコンテナで囲みサイズ制御、フォントサイズを大きく -->
                                 <div class="max-w-xs mx-auto">
+                                    <!-- ★ 変更点: src属性をrun.stage.imageに修正 -->
                                     <img src="${run.stage.image}" alt="${run.stage.name}" class="stage-image" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1a202c/e2e8f0?text=ステージ';">
                                 </div>
                                 <p class="text-center mt-2 text-xl md:text-2xl">${run.stage.name}</p>
