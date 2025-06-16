@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スプラトゥーン3 ステージ情報</title>
+    <!-- Tailwind CSSを読み込み -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Interフォントを読み込み */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* ダークモード背景 */
+            color: #e2e8f0; /* 明るいテキスト色 */
+        }
+        .card {
+            background-color: #2d3748;
+            border-radius: 0.75rem;
+            padding: 1rem; /* パディングを縮小 */
+            margin-bottom: 1rem; /* マージンを縮小 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            border: 1px solid #4a5568;
+        }
+        .stage-image {
+            width: 100%;
+            height: 9rem; /* 画像の高さを縮小 */
+            object-fit: cover;
+            border-radius: 0.5rem;
+            border: 2px solid #4a5568;
+        }
+        .weapon-image {
+            width: 3.5rem; /* ブキ画像のサイズを縮小 */
+            height: 3.5rem;
+            object-fit: contain;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            padding: 0.25rem; /* パディングを縮小 */
+        }
+        .btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+        .active-btn {
+            background-color: #4299e1;
+            color: white;
+            box-shadow: 0 0 10px rgba(66, 153, 225, 0.7);
+        }
+    </style>
+</head>
+<body class="p-2 sm:p-6">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-6">
+            <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">スプラトゥーン3 ステージ情報</h1>
+            <p class="text-sm text-gray-400">Spla3 APIを利用して最新のステージ情報を表示します。</p>
+        </header>
+
+        <!-- モード選択ボタン -->
+        <nav class="flex flex-wrap justify-center gap-2 mb-6">
+            <button id="btn-all" class="btn active-btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-blue-500 text-white" data-endpoint="schedule">全ルール</button>
+            <button id="btn-regular" class="btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="regular/schedule">レギュラー</button>
+            <button id="btn-bankara-challenge" class="btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-challenge/schedule">バンカラ (チャレンジ)</button>
+            <button id="btn-bankara-open" class="btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-open/schedule">バンカラ (オープン)</button>
+            <button id="btn-x" class="btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="x/schedule">Xマッチ</button>
+            <button id="btn-salmon" class="btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="coop-grouping/schedule">サーモンラン</button>
+        </nav>
+
+        <!-- ローディングスピナー -->
+        <div id="loading" class="text-center py-10" style="display: none;">
+            <svg class="animate-spin h-10 w-10 text-white mx-auto" xmlns="http="www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p class="mt-4 text-lg">データを読み込み中...</p>
+        </div>
+
+        <!-- エラーメッセージ表示エリア -->
+        <div id="error" class="text-center py-10 text-red-400 text-lg" style="display: none;"></div>
+        
+        <!-- データ表示エリア -->
+        <div id="data-container"></div>
+
+    </div>
+
+    <script>
+        const API_BASE_URL = "https://spla3.yuu26.com/api/";
+        const dataContainer = document.getElementById('data-container');
+        const loadingIndicator = document.getElementById('loading');
+        const errorContainer = document.getElementById('error');
+        const navButtons = document.querySelectorAll('nav button');
+
+        /**
+         * 日時文字列をフォーマットする
+         * @param {string} dateString - ISO 8601形式の日時文字列
+         * @returns {string} - "MM/DD HH:mm" 形式の文字列
+         */
+        function formatDateTime(dateString) {
+            const date = new Date(dateString);
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const day = date.getDate().toString().padStart(2, '0');
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${month}/${day} ${hours}:${minutes}`;
+        }
+
+        /**
+         * スケジュール情報を表示するHTMLを生成
+         * @param {string} title - 表示するスケジュールのタイトル (例: レギュラーマッチ)
+         * @param {Array} schedules - スケジュールデータの配列
+         * @returns {string} - HTML文字列
+         */
+        function createScheduleHtml(title, schedules) {
+            if (!schedules || schedules.length === 0) {
+                 return `<h2 class="text-xl sm:text-2xl font-bold mb-4 text-center text-gray-400">${title}</h2><p class="text-center text-gray-500">現在、開催情報はありません。</p>`;
+            }
+
+            let schedulesHtml = schedules.map(schedule => {
+                if (schedule.is_fest && !schedule.rule) {
+                    return `
+                        <div class="card">
+                            <div class="text-center">
+                                <p class="text-base sm:text-lg font-semibold text-yellow-400">フェス開催中！</p>
+                                <p class="text-sm text-gray-400">${formatDateTime(schedule.start_time)} - ${formatDateTime(schedule.end_time)}</p>
+                            </div>
+                        </div>`;
+                }
+                
+                const stagesHtml = schedule.stages.map(stage => `
+                    <div class="w-full md:w-1/2 p-2">
+                        <img src="${stage.image}" alt="${stage.name}" class="stage-image" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1a202c/e2e8f0?text=画像なし';">
+                        <p class="text-center mt-2 font-semibold text-base">${stage.name}</p>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="card">
+                        <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
+                            <h3 class="text-lg sm:text-xl font-bold text-blue-400">${schedule.rule.name}</h3>
+                            <span class="text-sm sm:text-base text-gray-400 font-medium">${formatDateTime(schedule.start_time)} - ${formatDateTime(schedule.end_time)}</span>
+                        </div>
+                        <div class="flex flex-wrap -m-2">${stagesHtml}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            return `<h2 class="text-2xl sm:text-3xl font-bold mb-4 border-l-4 border-blue-400 pl-3">${title}</h2>${schedulesHtml}`;
+        }
+
+        /**
+         * サーモンランの情報を表示するHTMLを生成
+         * @param {Array} salmonRuns - サーモンランデータの配列
+         * @returns {string} - HTML文字列
+         */
+        function createSalmonRunHtml(salmonRuns) {
+            if (!salmonRuns || salmonRuns.length === 0) return '';
+            
+            let salmonRunHtml = salmonRuns.map(run => {
+                const weaponsHtml = run.weapons.map(weapon => `
+                    <div class="flex flex-col items-center">
+                        <img src="${weapon.image}" alt="${weapon.name}" class="weapon-image" onerror="this.onerror=null;this.src='https://placehold.co/128x128/2d3748/e2e8f0?text=ブキ';">
+                        <p class="text-xs text-center mt-1 text-gray-300">${weapon.name}</p>
+                    </div>`).join('');
+
+                return `
+                    <div class="card">
+                        <div class="text-right mb-4">
+                            <span class="text-sm sm:text-base text-gray-400 font-medium">${formatDateTime(run.start_time)} - ${formatDateTime(run.end_time)}</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+                            <div>
+                                <img src="${run.stage.image}" alt="${run.stage.name}" class="stage-image" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1a202c/e2e8f0?text=ステージ';">
+                                <p class="text-center mt-2 font-semibold text-base">${run.stage.name}</p>
+                                ${run.is_big_run ? '<p class="text-center text-red-500 font-bold mt-1 text-sm">ビッグラン発生中！</p>' : ''}
+                            </div>
+                            <div>
+                                <p class="font-semibold mb-2 text-base sm:text-lg">支給ブキ</p>
+                                <div class="flex justify-around flex-wrap gap-2">${weaponsHtml}</div>
+                                ${run.boss ? `<div class="mt-4 text-center"><p class="font-semibold text-base sm:text-lg text-red-400">オカシラシャケ: ${run.boss.name}</p></div>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            return `<h2 class="text-2xl sm:text-3xl font-bold mb-4 border-l-4 border-green-400 pl-3">サーモンラン</h2>${salmonRunHtml}`;
+        }
+        
+        /**
+         * APIからデータを取得して表示する
+         * @param {string} endpoint - APIのエンドポイント
+         */
+        async function fetchData(endpoint) {
+            loadingIndicator.style.display = 'block';
+            errorContainer.style.display = 'none';
+            dataContainer.innerHTML = '';
+
+            try {
+                const response = await fetch(API_BASE_URL + endpoint, {
+                    headers: {
+                        'User-Agent': 'Spla3ScheduleViewer/1.0 (Prototype for User)',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTPエラー: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                let html = '';
+
+                if (endpoint === 'schedule') {
+                    const result = data.result;
+                    html += createScheduleHtml('レギュラーマッチ', result.regular);
+                    html += createScheduleHtml('バンカラマッチ (チャレンジ)', result.bankara_challenge);
+                    html += createScheduleHtml('バンカラマッチ (オープン)', result.bankara_open);
+                    html += createScheduleHtml('Xマッチ', result.x);
+                    html += createScheduleHtml('イベントマッチ', result.event);
+                } else if (endpoint.startsWith('coop-grouping')) {
+                    html = createSalmonRunHtml(data.results);
+                } else {
+                    const buttonElement = [...navButtons].find(btn => btn.dataset.endpoint === endpoint);
+                    const title = buttonElement ? buttonElement.textContent : 'スケジュール';
+                    html = createScheduleHtml(title, data.results);
+                }
+                
+                dataContainer.innerHTML = html;
+
+            } catch (error) {
+                console.error('データの取得に失敗しました:', error);
+                errorContainer.textContent = 'データの取得に失敗しました。しばらくしてからもう一度お試しください。';
+                errorContainer.style.display = 'block';
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        // ナビゲーションボタンのクリックイベント
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                navButtons.forEach(btn => {
+                    btn.classList.remove('active-btn', 'bg-blue-500', 'text-white');
+                    btn.classList.add('bg-gray-700', 'text-gray-300');
+                });
+                button.classList.add('active-btn', 'bg-blue-500', 'text-white');
+                button.classList.remove('bg-gray-700', 'text-gray-300');
+                
+                fetchData(button.dataset.endpoint);
+            });
+        });
+
+        // 初期表示として全ルールのスケジュールを取得
+        window.addEventListener('load', () => {
+            fetchData('schedule');
+        });
+    </script>
+</body>
+</html>
