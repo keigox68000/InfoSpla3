@@ -4,42 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>スプラトゥーン3 ステージ情報</title>
-    <!-- Tailwind CSSを読み込み -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Interフォントを読み込み */
+        /*
+         * Webフォントの読み込み設定
+        */
+        @font-face {
+            font-family: 'IkaFont';
+            src: url('https://raw.githubusercontent.com/keigox68000/InfoSpla3/main/fonts/ikamodoki1_0.ttf') format('truetype');
+        }
+        @font-face {
+            font-family: 'BuildingFont';
+            src: url('https://raw.githubusercontent.com/keigox68000/InfoSpla3/main/fonts/Buildingsandundertherailwaytracksfree_ver.otf') format('opentype');
+        }
+
+        /* Interフォントを読み込み（フォント読み込み失敗時の代替用） */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
         body {
-            font-family: 'Inter', sans-serif;
+            /* デフォルトフォントもBuildingFontに */
+            font-family: 'BuildingFont', 'Inter', sans-serif;
             background-color: #1a202c; /* ダークモード背景 */
             color: #e2e8f0; /* 明るいテキスト色 */
         }
+
+        /* 見出しやボタンにIkaFontを適用 */
+        h1, .section-title, nav button {
+            font-family: 'IkaFont', 'Inter', sans-serif;
+        }
+
         .card {
             background-color: #2d3748;
             border-radius: 0.75rem;
-            padding: 1rem; /* パディングを縮小 */
-            margin-bottom: 1rem; /* マージンを縮小 */
+            padding: 1rem;
+            margin-bottom: 1rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
             border: 1px solid #4a5568;
         }
         .stage-image {
             width: 100%;
-            height: 9rem; /* 画像の高さを縮小 */
+            height: 9rem;
             object-fit: cover;
             border-radius: 0.5rem;
             border: 2px solid #4a5568;
         }
         .weapon-image {
-            width: 3.5rem; /* ブキ画像のサイズを縮小 */
+            width: 3.5rem;
             height: 3.5rem;
             object-fit: contain;
             background: rgba(255,255,255,0.1);
             border-radius: 50%;
-            padding: 0.25rem; /* パディングを縮小 */
+            padding: 0.25rem;
         }
         .btn {
             transition: all 0.2s ease-in-out;
-            text-align: center; /* ボタンのテキストを中央揃え */
+            text-align: center;
         }
         .btn:hover {
             transform: translateY(-2px);
@@ -56,21 +75,18 @@
 
     <div class="max-w-7xl mx-auto">
         <header class="text-center mb-6">
-            <!-- ★ 変更点: タイトルを2行表示にする -->
-            <h1 class="text-2xl sm:text-3xl font-bold text-white leading-tight">スプラトゥーン3<br>ステージ情報</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold text-white leading-tight">スプラトゥーン3<br>ステージインフォ</h1>
         </header>
 
-        <!-- モード選択ボタン -->
         <nav class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6 max-w-md mx-auto">
-            <button id="btn-all" class="btn active-btn flex justify-center items-center h-14 font-bold py-1.5 px-3 text-sm sm:text-base rounded-full bg-blue-500 text-white" data-endpoint="schedule">全ルール</button>
-            <button id="btn-regular" class="btn flex justify-center items-center h-14 font-bold py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="regular/schedule">レギュラー</button>
-            <button id="btn-bankara-challenge" class="btn flex flex-col justify-center items-center h-14 font-bold leading-tight py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-challenge/schedule">バンカラ<span class="text-xs font-normal">(チャレンジ)</span></button>
-            <button id="btn-bankara-open" class="btn flex flex-col justify-center items-center h-14 font-bold leading-tight py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-open/schedule">バンカラ<span class="text-xs font-normal">(オープン)</span></button>
-            <button id="btn-x" class="btn flex justify-center items-center h-14 font-bold py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="x/schedule">Xマッチ</button>
-            <button id="btn-salmon" class="btn flex justify-center items-center h-14 font-bold py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="coop-grouping/schedule">サーモンラン</button>
+            <button id="btn-all" class="btn active-btn flex justify-center items-center h-16 font-bold py-1.5 px-3 text-sm sm:text-base rounded-full bg-blue-500 text-white" data-endpoint="schedule">すべて</button>
+            <button id="btn-regular" class="btn flex justify-center items-center h-16 font-bold py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="regular/schedule">レギュラー</button>
+            <button id="btn-bankara-challenge" class="btn flex flex-col justify-center items-center h-16 font-bold leading-tight py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-challenge/schedule">バンカラ<span class="text-xs font-normal" style="font-family: 'BuildingFont', 'Inter', sans-serif;">(チャレンジ)</span></button>
+            <button id="btn-bankara-open" class="btn flex flex-col justify-center items-center h-16 font-bold leading-tight py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-open/schedule">バンカラ<span class="text-xs font-normal" style="font-family: 'BuildingFont', 'Inter', sans-serif;">(オープン)</span></button>
+            <button id="btn-x" class="btn flex justify-center items-center h-16 font-bold py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="x/schedule">Xマッチ</button>
+            <button id="btn-salmon" class="btn flex justify-center items-center h-16 font-bold py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="coop-grouping/schedule">サーモンラン</button>
         </nav>
 
-        <!-- ローディングスピナー -->
         <div id="loading" class="text-center py-10" style="display: none;">
             <svg class="animate-spin h-10 w-10 text-white mx-auto" xmlns="http="www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -79,10 +95,8 @@
             <p class="mt-4 text-lg">データを読み込み中...</p>
         </div>
 
-        <!-- エラーメッセージ表示エリア -->
         <div id="error" class="text-center py-10 text-red-400 text-lg" style="display: none;"></div>
         
-        <!-- データ表示エリア -->
         <div id="data-container"></div>
 
     </div>
@@ -117,7 +131,7 @@
          */
         function createScheduleHtml(title, schedules) {
             if (!schedules || schedules.length === 0) {
-                 return `<h2 class="text-xl sm:text-2xl font-bold mb-4 text-center text-gray-400">${title}</h2><p class="text-center text-gray-500">現在、開催情報はありません。</p>`;
+                 return `<h2 class="section-title text-xl sm:text-2xl font-bold mb-4 text-center text-gray-400">${title}</h2><p class="text-center text-gray-500">現在、開催情報はありません。</p>`;
             }
 
             let schedulesHtml = schedules.map(schedule => {
@@ -134,7 +148,7 @@
                 const stagesHtml = schedule.stages ? schedule.stages.map(stage => `
                     <div class="w-full md:w-1/2 p-2">
                         <img src="${stage.image}" alt="${stage.name}" class="stage-image" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1a202c/e2e8f0?text=画像なし';">
-                        <p class="text-center mt-2 font-semibold text-base">${stage.name}</p>
+                        <p class="text-center mt-2 font-semibold text-lg">${stage.name}</p>
                     </div>
                 `).join('') : '';
 
@@ -143,15 +157,16 @@
                 return `
                     <div class="card">
                         <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
-                            <h3 class="text-lg sm:text-xl font-bold text-blue-400">${ruleName}</h3>
-                            <span class="text-sm sm:text-base text-gray-400 font-medium">${formatDateTime(schedule.start_time)} - ${formatDateTime(schedule.end_time)}</span>
+                            <h3 class="text-xl sm:text-2xl font-bold text-blue-400">${ruleName}</h3>
+                            <span class="text-base sm:text-lg text-gray-400 font-medium">${formatDateTime(schedule.start_time)} - ${formatDateTime(schedule.end_time)}</span>
                         </div>
                         <div class="flex flex-wrap -m-2">${stagesHtml}</div>
                     </div>
                 `;
             }).join('');
             
-            return `<h2 class="text-2xl sm:text-3xl font-bold mb-4 border-l-4 border-blue-400 pl-3">${title}</h2>${schedulesHtml}`;
+            // h2にsection-titleクラスを追加
+            return `<h2 class="section-title text-2xl sm:text-3xl font-bold mb-4 border-l-4 border-blue-400 pl-3">${title}</h2>${schedulesHtml}`;
         }
 
         /**
@@ -166,31 +181,31 @@
                 const weaponsHtml = run.weapons.map(weapon => `
                     <div class="flex flex-col items-center">
                         <img src="${weapon.image}" alt="${weapon.name}" class="weapon-image" onerror="this.onerror=null;this.src='https://placehold.co/128x128/2d3748/e2e8f0?text=ブキ';">
-                        <p class="text-xs text-center mt-1 text-gray-300">${weapon.name}</p>
+                        <p class="text-sm text-center mt-1 text-gray-300">${weapon.name}</p>
                     </div>`).join('');
 
                 return `
                     <div class="card">
                         <div class="text-right mb-4">
-                            <span class="text-sm sm:text-base text-gray-400 font-medium">${formatDateTime(run.start_time)} - ${formatDateTime(run.end_time)}</span>
+                             <span class="text-base sm:text-lg text-gray-400 font-medium">${formatDateTime(run.start_time)} - ${formatDateTime(run.end_time)}</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                             <div>
                                 <img src="${run.stage.image}" alt="${run.stage.name}" class="stage-image" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1a202c/e2e8f0?text=ステージ';">
-                                <p class="text-center mt-2 font-semibold text-base">${run.stage.name}</p>
-                                ${run.is_big_run ? '<p class="text-center text-red-500 font-bold mt-1 text-sm">ビッグラン発生中！</p>' : ''}
+                                <p class="text-center mt-2 font-semibold text-lg">${run.stage.name}</p>
                             </div>
                             <div>
-                                <p class="font-semibold mb-2 text-base sm:text-lg">支給ブキ</p>
+                                <p class="font-semibold mb-2 text-lg sm:text-xl">支給ブキ</p>
                                 <div class="grid grid-cols-4 gap-2">${weaponsHtml}</div>
-                                ${run.boss ? `<div class="mt-4 text-center"><p class="font-semibold text-base sm:text-lg text-red-400">オカシラシャケ: ${run.boss.name}</p></div>` : ''}
+                                ${run.boss ? `<div class="mt-4 text-center"><p class="font-semibold text-lg sm:text-xl text-red-400">オカシラシャケ: ${run.boss.name}</p></div>` : ''}
                             </div>
                         </div>
                     </div>
                 `;
             }).join('');
 
-            return `<h2 class="text-2xl sm:text-3xl font-bold mb-4 border-l-4 border-green-400 pl-3">サーモンラン</h2>${salmonRunHtml}`;
+            // h2にsection-titleクラスを追加
+            return `<h2 class="section-title text-2xl sm:text-3xl font-bold mb-4 border-l-4 border-green-400 pl-3">サーモンラン</h2>${salmonRunHtml}`;
         }
         
         /**
