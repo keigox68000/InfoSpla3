@@ -47,12 +47,16 @@
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
             border: 1px solid #4a5568;
         }
-        /* ★ 変更点: 画像のアスペクト比を維持するように修正 */
+        /* ★ 変更点: 画像の最大高さを設定し、中央に配置 */
         .stage-image {
             width: 100%;
-            height: auto; /* 高さを自動に設定してアスペクト比を維持 */
+            height: auto; /* アスペクト比を維持 */
+            max-height: 12rem; /* PCで画像が大きくなりすぎないように最大高さを設定 (192px) */
+            margin-left: auto;
+            margin-right: auto;
             border-radius: 0.5rem;
             border: 2px solid #4a5568;
+            display: block;
         }
         .weapon-image {
             width: 3.5rem;
@@ -75,8 +79,6 @@
             color: white;
             box-shadow: 0 0 10px rgba(66, 153, 225, 0.7);
         }
-
-        /* ボタンのフォントサイズ指定を削除し、Tailwind CSSクラスに一本化 */
     </style>
 </head>
 <body class="p-2 sm:p-6">
@@ -156,7 +158,7 @@
                 const stagesHtml = schedule.stages ? schedule.stages.map(stage => `
                     <div class="w-full md:w-1/2 p-2">
                         <img src="${stage.image}" alt="${stage.name}" class="stage-image" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1a202c/e2e8f0?text=画像なし';">
-                        <p class="text-center mt-2 text-lg">${stage.name}</p>
+                        <p class="text-center mt-2 text-lg sm:text-xl">${stage.name}</p>
                     </div>
                 `).join('') : '';
 
@@ -199,7 +201,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
                             <div>
                                 <img src="${run.stage.image}" alt="${run.stage.name}" class="stage-image" onerror="this.onerror=null;this.src='https://placehold.co/600x300/1a202c/e2e8f0?text=ステージ';">
-                                <p class="text-center mt-2 text-lg">${run.stage.name}</p>
+                                <p class="text-center mt-2 text-lg sm:text-xl">${run.stage.name}</p>
                                 ${run.is_big_run ? '<p class="text-center text-red-500 mt-1 text-sm">ビッグラン発生中！</p>' : ''}
                             </div>
                             <div>
