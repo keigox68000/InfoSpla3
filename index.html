@@ -61,14 +61,14 @@
         </header>
 
         <!-- モード選択ボタン -->
-        <!-- ★ 変更点: flexboxからgridレイアウトに変更し、ボタンの並びを整理 -->
-        <nav class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-6 max-w-2xl mx-auto">
-            <button id="btn-all" class="btn active-btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-blue-500 text-white" data-endpoint="schedule">全ルール</button>
-            <button id="btn-regular" class="btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="regular/schedule">レギュラー</button>
-            <button id="btn-bankara-challenge" class="btn col-span-1 sm:col-span-2 font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-challenge/schedule">バンカラ (チャレンジ)</button>
-            <button id="btn-bankara-open" class="btn col-span-1 sm:col-span-2 font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-open/schedule">バンカラ (オープン)</button>
-            <button id="btn-x" class="btn font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="x/schedule">Xマッチ</button>
-            <button id="btn-salmon" class="btn col-span-3 sm:col-span-6 font-bold py-1.5 px-3 text-sm sm:py-2 sm:px-4 sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="coop-grouping/schedule">サーモンラン</button>
+        <!-- ★ 変更点: gridレイアウトを調整し、ボタンのスタイルを更新 -->
+        <nav class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6 max-w-md mx-auto">
+            <button id="btn-all" class="btn active-btn flex justify-center items-center h-14 font-bold py-1.5 px-3 text-sm sm:text-base rounded-full bg-blue-500 text-white" data-endpoint="schedule">全ルール</button>
+            <button id="btn-regular" class="btn flex justify-center items-center h-14 font-bold py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="regular/schedule">レギュラー</button>
+            <button id="btn-bankara-challenge" class="btn flex flex-col justify-center items-center h-14 font-bold leading-tight py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-challenge/schedule">バンカラ<span class="text-xs font-normal">(チャレンジ)</span></button>
+            <button id="btn-bankara-open" class="btn flex flex-col justify-center items-center h-14 font-bold leading-tight py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-open/schedule">バンカラ<span class="text-xs font-normal">(オープン)</span></button>
+            <button id="btn-x" class="btn flex justify-center items-center h-14 font-bold py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="x/schedule">Xマッチ</button>
+            <button id="btn-salmon" class="btn flex justify-center items-center h-14 font-bold py-1.5 px-3 text-sm sm:text-base rounded-full bg-gray-700 text-gray-300" data-endpoint="coop-grouping/schedule">サーモンラン</button>
         </nav>
 
         <!-- ローディングスピナー -->
@@ -183,7 +183,6 @@
                             </div>
                             <div>
                                 <p class="font-semibold mb-2 text-base sm:text-lg">支給ブキ</p>
-                                <!-- ★ 変更点: flexboxからgridレイアウトに変更し、ブキアイコンを4列で表示 -->
                                 <div class="grid grid-cols-4 gap-2">${weaponsHtml}</div>
                                 ${run.boss ? `<div class="mt-4 text-center"><p class="font-semibold text-base sm:text-lg text-red-400">オカシラシャケ: ${run.boss.name}</p></div>` : ''}
                             </div>
