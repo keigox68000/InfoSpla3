@@ -8,7 +8,7 @@
     <style>
         /*
          * Webフォントの読み込み設定
-        */
+         */
         @font-face {
             font-family: 'IkaFont';
             src: url('https://raw.githubusercontent.com/keigox68000/InfoSpla3/main/fonts/ikamodoki1_0.ttf') format('truetype');
@@ -21,7 +21,7 @@
         /* Interフォントを読み込み（フォント読み込み失敗時の代替用） */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
-        /* ★ 変更点: ブラウザによる文字サイズの自動調整を抑制 */
+        /* ブラウザによる文字サイズの自動調整を抑制 */
         html {
             -webkit-text-size-adjust: 100%; /* iOS Safari用 */
             text-size-adjust: 100%; /* 標準 */
@@ -76,18 +76,7 @@
             box-shadow: 0 0 10px rgba(66, 153, 225, 0.7);
         }
 
-        /* ボタンの文字サイズを数値で直接指定 */
-        nav button {
-            /* スマートフォンなどの小さい画面でのサイズ */
-            font-size: 14px; /* ユーザー様設定値を保持 */
-        }
-
-        /* 画面幅が640px以上の場合の文字サイズ */
-        @media (min-width: 640px) {
-            nav button {
-                font-size: 24px; /* ユーザー様設定値を保持 */
-            }
-        }
+        /* ★ 変更点: ボタンのフォントサイズ指定を削除し、Tailwind CSSクラスに一本化 */
     </style>
 </head>
 <body class="p-2 sm:p-6">
@@ -97,14 +86,14 @@
             <h1 class="text-2xl sm:text-3xl text-white leading-tight">スプラトゥーン3<br>ステージインフォ</h1>
         </header>
 
-        <!-- text-sm, sm:text-base クラスは削除済み -->
+        <!-- ★ 変更点: 各ボタンに text-sm sm:text-2xl を追加。span内のクラスも調整 -->
         <nav class="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6 max-w-md mx-auto">
-            <button id="btn-all" class="btn active-btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-blue-500 text-white" data-endpoint="schedule">すべて</button>
-            <button id="btn-regular" class="btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-gray-700 text-gray-300" data-endpoint="regular/schedule">レギュラー</button>
-            <button id="btn-bankara-challenge" class="btn flex flex-col justify-center items-center h-16 leading-tight py-1.5 px-3 rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-challenge/schedule">バンカラ<span class="text-sm font-normal" style="font-family: 'BuildingFont', 'Inter', sans-serif;">(チャレンジ)</span></button>
-            <button id="btn-bankara-open" class="btn flex flex-col justify-center items-center h-16 leading-tight py-1.5 px-3 rounded-full bg-gray-700 text-gray-300" data-endpoint="bankara-open/schedule">バンカラ<span class="text-sm font-normal" style="font-family: 'BuildingFont', 'Inter', sans-serif;">(オープン)</span></button>
-            <button id="btn-x" class="btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-gray-700 text-gray-300" data-endpoint="x/schedule">Xマッチ</button>
-            <button id="btn-salmon" class="btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-gray-700 text-gray-300" data-endpoint="coop-grouping/schedule">サーモンラン</button>
+            <button id="btn-all" class="btn active-btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-blue-500 text-white text-sm sm:text-2xl" data-endpoint="schedule">すべて</button>
+            <button id="btn-regular" class="btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-gray-700 text-gray-300 text-sm sm:text-2xl" data-endpoint="regular/schedule">レギュラー</button>
+            <button id="btn-bankara-challenge" class="btn flex flex-col justify-center items-center h-16 leading-tight py-1.5 px-3 rounded-full bg-gray-700 text-gray-300 text-sm sm:text-2xl" data-endpoint="bankara-challenge/schedule">バンカラ<span class="text-xs sm:text-sm font-normal" style="font-family: 'BuildingFont', 'Inter', sans-serif;">(チャレンジ)</span></button>
+            <button id="btn-bankara-open" class="btn flex flex-col justify-center items-center h-16 leading-tight py-1.5 px-3 rounded-full bg-gray-700 text-gray-300 text-sm sm:text-2xl" data-endpoint="bankara-open/schedule">バンカラ<span class="text-xs sm:text-sm font-normal" style="font-family: 'BuildingFont', 'Inter', sans-serif;">(オープン)</span></button>
+            <button id="btn-x" class="btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-gray-700 text-gray-300 text-sm sm:text-2xl" data-endpoint="x/schedule">Xマッチ</button>
+            <button id="btn-salmon" class="btn flex justify-center items-center h-16 py-1.5 px-3 rounded-full bg-gray-700 text-gray-300 text-sm sm:text-2xl" data-endpoint="coop-grouping/schedule">サーモンラン</button>
         </nav>
 
         <div id="loading" class="text-center py-10" style="display: none;">
@@ -258,7 +247,8 @@
                     html = createSalmonRunHtml(data.results);
                 } else {
                     const buttonElement = [...navButtons].find(btn => btn.dataset.endpoint === endpoint);
-                    const title = buttonElement ? buttonElement.textContent : 'スケジュール';
+                    // ボタン内のspanタグを除いたテキストを取得
+                    const title = buttonElement ? buttonElement.childNodes[0].nodeValue.trim() : 'スケジュール';
                     html = createScheduleHtml(title, data.results);
                 }
                 
